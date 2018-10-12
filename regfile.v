@@ -24,14 +24,10 @@ wire [31:0] decodedReg;
 wire [31:0] dataReg0;
 wire[31:0] register0, register1, register2, register3, register4, register5, register6, register7, register8, register9, register10, register11, register12, register13, register14, register15, register16, register17, register18, register19, register20, register21, register22, register23, register24, register25, register26, register27, register28, register29, register30, register31;
 
-// genvar dataRegs;
-// generate
-//   for (dataRegs = 1; dataRegs < 32; dataRegs = dataRegs + 1) begin: genRegs
-//       register32 dataRegister(.q(registers[0]), .d(WriteData), .wrenable(decodedReg[dataRegs]), .clk(Clk));
-//   end
-// endgenerate
 
-// register32 reg0(.q(register0), .d(WriteData), .wrenable(decodedReg[0]), .clk(Clk));
+decoder1to32 decoder(.out(decodedReg), .enable(RegWrite), .address(WriteRegister));
+
+register32zero reg0(.q(register0), .d(WriteData), .wrenable(decodedReg[0]), .clk(Clk));
 register32 reg1(.q(register1), .d(WriteData), .wrenable(decodedReg[1]), .clk(Clk));
 register32 reg2(.q(register2), .d(WriteData), .wrenable(decodedReg[2]), .clk(Clk));
 register32 reg3(.q(register3), .d(WriteData), .wrenable(decodedReg[3]), .clk(Clk));
@@ -65,9 +61,6 @@ register32 reg30(.q(register30), .d(WriteData), .wrenable(decodedReg[30]), .clk(
 register32 reg31(.q(register31), .d(WriteData), .wrenable(decodedReg[31]), .clk(Clk));
 
 
-
-decoder1to32 decoder(.out(decodedReg), .enable(RegWrite), .address(WriteRegister));
-register32zero reg0(.q(register0), .d(WriteData), .wrenable(decodedReg[0]), .clk(Clk));
 mux32to1by32 mux1(.out(ReadData1), .address(ReadRegister1), .input0(register0), .input1(register1), .input2(register2),
                   .input3(register3), .input4(register4), .input5(register5), .input6(register6), .input7(register7),
                   .input8(register8), .input9(register9), .input10(register10), .input11(register11), .input12(register12),
@@ -82,45 +75,5 @@ mux32to1by32 mux2(.out(ReadData2), .address(ReadRegister2), .input0(register0), 
                   .input18(register18), .input19(register19), .input20(register20), .input21(register21), .input22(register22),
                   .input23(register23), .input24(register24), .input25(register25), .input26(register26), .input27(register27),
                   .input28(register28), .input29(register29), .input30(register30), .input31(register31));
-
-// always @(posedge Clk) begin
-//   genRegs[decodedReg] dataRegister <= WriteData
-//
-// end
-
-// output[31:0]	out,
-// input		enable,
-// input[4:0]	address
-
-  // decoder1to32 decoder(.out(), .enable(), .address());
-  //
-  // // output[31:0]  out,
-  // // input[4:0]    address,
-  // // input[31:0]   input0, ...etc
-  // mux32to1by32 mux(.out(), .address(), .input0(), .input1()...);
-  //
-  // // module register32zero
-  // // (
-  // //   output wire [31:0] q,
-  // //   input [31:0] d,
-  // //   input wrenable,
-  // //   input clk
-  // register32zero zeroReg(.q(), .d(), .wrenable(), .clk());
-  //
-  // // register32
-  // // (
-  // //   output wire [31:0] q,
-  // //   input [31:0] d,
-  // //   input wrenable,
-  // //   input clk
-  //
-  // register32 register(.q(), .d(), .wrenable(), .clk());
-  //
-  //
-  // // These two lines are clearly wrong.  They are included to showcase how the
-  // // test harness works. Delete them after you understand the testing process,
-  // // and replace them with your actual code.
-  // assign ReadData1 = 42;
-  // assign ReadData2 = 42;
 
 endmodule
